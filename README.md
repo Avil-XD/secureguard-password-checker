@@ -2,6 +2,10 @@
 
 A modern, real-time password security analyzer that checks password strength and detects data breaches while maintaining complete privacy. Built with pure JavaScript, this tool provides instant feedback on password security without sending sensitive data over the network.
 
+## How to run?
+**Click on the link to use SecureGuard Password Checker**
+👉[SecureGuard Password Checker](https://avil-xd.github.io/secureguard-password-checker)
+
 ## 🚀 Features
 
 - 🔒 Real-time password strength analysis using zxcvbn
@@ -12,11 +16,6 @@ A modern, real-time password security analyzer that checks password strength and
 - ♿ Accessibility-first approach
 - ⚡ Zero dependencies (except for zxcvbn)
 
-## 🔥 Live Demo
-
-[Try SecureGuard Password Checker](https://avil-xd.github.io/secureguard-password-checker)
-
-![SecureGuard Password Checker Screenshot](screenshot.png)
 
 ## 🛠️ Technical Features
 
@@ -26,25 +25,9 @@ A modern, real-time password security analyzer that checks password strength and
 - **Real-time Feedback**: Instant strength assessment and breach checking
 - **Privacy-First**: All computations happen locally
 
-## 🚀 Quick Start
-
-1. Clone the repository:
-```bash
-git clone https://github.com/Avil-XD/secureguard-password-checker.git
-```
-
-2. Open `index.html` in your browser or serve with any static file server:
-```bash
-# Using Python
-python -m http.server 8000
-
-# Using Node.js
-npx serve
-```
-
 ## 🔧 Development
 
-No build process required! The project uses vanilla JavaScript and CSS, making it easy to modify and extend.
+- **No build process required! The project uses vanilla JavaScript and CSS, making it easy to modify and extend.**
 
 ## 🤝 Contributing
 
