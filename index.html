@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGuard - Password Security Checker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="app-wrapper">
+            <header>
+                <div class="title-group">
+                    <i class="fas fa-shield-halved"></i>
+                    <div class="title-content">
+                        <h1>SecureGuard</h1>
+                        <p>Advanced Password Security Checker</p>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <input type="password" 
+                           id="password" 
+                           placeholder="Type your password"
+                           autocomplete="off"
+                           aria-label="Password input">
+                    <button id="togglePassword" class="toggle-btn" type="button" aria-label="Toggle password visibility">
+                        <i class="far fa-eye"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="info-panel">
+                <div class="strength-section">
+                    <div id="strength-bar" class="strength-bar">
+                        <div id="strength-progress" class="progress"></div>
+                    </div>
+                    <div class="meter-info">
+                        <span id="strength-label">Enter a password to check</span>
+                        <span id="score-value"></span>
+                    </div>
+                </div>
+
+                <div class="status-panels">
+                    <div id="analysis" class="panel analysis">
+                        <div id="criteria" class="criteria-list"></div>
+                    </div>
+
+                    <div id="breach" class="panel breach">
+                        <div id="breach-content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <span class="secure-note">
+                    <i class="fas fa-lock"></i> 
+                    Secure, client-side password analysis powered by HIBP
+                </span>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
+    <script>
+        const els = {
+            password: document.getElementById('password'),
+            toggleBtn: document.getElementById('togglePassword'),
+            strengthBar: document.getElementById('strength-bar'),
+            strengthProgress: document.getElementById('strength-progress'),
+            strengthLabel: document.getElementById('strength-label'),
+            scoreValue: document.getElementById('score-value'),
+            analysis: document.getElementById('analysis'),
+            criteria: document.getElementById('criteria'),
+            breach: document.getElementById('breach'),
+            breachContent: document.getElementById('breach-content')
+        };
+
+        const strengthLabels = ['Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'];
+        const strengthColors = ['#ff5252', '#ffa502', '#ffa502', '#00b894', '#6c5ce7'];
+        let lastCheckedPassword = '';
+
+        // Toggle password visibility
+        els.toggleBtn.addEventListener('click', () => {
+            const type = els.password.type === 'password' ? 'text' : 'password';
+            els.password.type = type;
+            els.toggleBtn.querySelector('i').className = 
+                `far fa-${type === 'password' ? 'eye' : 'eye-slash'}`;
+        });
+
+        // Check password breach status
+        async function checkBreach(password) {
+            try {
+                const encoder = new TextEncoder();
+                const data = await crypto.subtle.digest('SHA-1', encoder.encode(password));
+                const hashArray = Array.from(new Uint8Array(data));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+                const prefix = hashHex.substring(0, 5);
+                const suffix = hashHex.substring(5);
+
+                const response = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
+                const results = await response.text();
+                const match = results.split('\n').find(line => line.split(':')[0] === suffix);
+                
+                els.breach.classList.add('active');
+                
+                if (match) {
+                    const [, count] = match.split(':');
+                    const breachCount = parseInt(count.trim()).toLocaleString();
+                    els.breach.className = 'panel breach danger active';
+                    els.breachContent.innerHTML = `
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div class="breach-details">
+                            <strong>Found in ${breachCount} breaches</strong>
+                            <span>Change this password immediately</span>
+                        </div>
+                    `;
+                } else {
+                    els.breach.className = 'panel breach success active';
+                    els.breachContent.innerHTML = `
+                        <i class="fas fa-check-circle"></i>
+                        <div class="breach-details">
+                            <strong>No breaches found</strong>
+                            <span>Password hasn't been exposed</span>
+                        </div>
+                    `;
+                }
+            } catch {
+                setTimeout(() => checkBreach(password), 3000);
+            }
+        }
+
+        // Update strength meter and analysis
+        function updatePassword(password) {
+            if (!password) {
+                els.analysis.classList.remove('active');
+                els.breach.classList.remove('active');
+                els.strengthProgress.style.width = '0%';
+                els.strengthLabel.textContent = 'Enter a password to check';
+                els.scoreValue.textContent = '';
+                return;
+            }
+
+            const result = zxcvbn(password);
+            const score = result.score;
+
+            // Update strength indicator
+            els.strengthProgress.style.width = `${(score + 1) * 20}%`;
+            els.strengthProgress.style.backgroundColor = strengthColors[score];
+            els.strengthLabel.textContent = strengthLabels[score];
+            els.scoreValue.textContent = `${score}/4`;
+
+            // Update analysis
+            els.analysis.classList.add('active');
+            const warnings = result.feedback.warning ? 
+                `<div class="warning"><i class="fas fa-exclamation-circle"></i>${result.feedback.warning}</div>` : '';
+            const suggestions = result.feedback.suggestions.length ? 
+                result.feedback.suggestions.map(s => `<div class="suggestion"><i class="fas fa-info-circle"></i>${s}</div>`).join('') : '';
+
+            els.criteria.innerHTML = warnings + suggestions;
+
+            // Check for breaches
+            if (password.length >= 3 && password !== lastCheckedPassword) {
+                lastCheckedPassword = password;
+                checkBreach(password);
+            }
+        }
+
+        // Handle password input
+        els.password.addEventListener('input', e => updatePassword(e.target.value));
+    </script>
+</body>
+</html>

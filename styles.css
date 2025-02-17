@@ -1,0 +1,334 @@
+:root {
+    /* Dark theme colors */
+    --bg-primary: #1a1b1e;
+    --bg-secondary: #2c2d30;
+    --bg-tertiary: #3a3b3e;
+    
+    --primary: #6c5ce7;
+    --primary-light: #a29bfe;
+    --primary-glow: #6c5ce730;
+    --danger: #ff5252;
+    --danger-dim: #ff525230;
+    --success: #00b894;
+    --success-dim: #00b89430;
+    --warning: #ffa502;
+    --warning-dim: #ffa50230;
+    
+    --text: #ffffff;
+    --text-secondary: #a4b0be;
+    --text-dim: #747d8c;
+    
+    --border: #40454e;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --glass: rgba(255, 255, 255, 0.03);
+    
+    --radius-lg: 16px;
+    --radius: 12px;
+    --radius-sm: 8px;
+    
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, system-ui, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 90vw;
+    margin: 0 auto;
+}
+
+.app-wrapper {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    max-width: 600px;
+    margin: 0 auto;
+    height: min(85vh, 500px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header */
+header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: var(--glass);
+    border-bottom: 1px solid var(--border);
+}
+
+.title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.title-group i {
+    font-size: 1.75rem;
+    color: var(--primary);
+    text-shadow: 0 0 15px var(--primary-glow);
+}
+
+.title-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+h1 {
+    font-size: 1.5rem;
+    color: var(--primary-light);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.title-content p {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+}
+
+.input-group {
+    width: 100%;
+}
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    padding: 0.25rem;
+}
+
+input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: none;
+    font-size: 1rem;
+    color: var(--text);
+    caret-color: var(--primary-light);
+}
+
+input:focus {
+    outline: none;
+}
+
+input::placeholder {
+    color: var(--text-dim);
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    margin-right: 0.25rem;
+}
+
+.toggle-btn:hover {
+    color: var(--text);
+    background: var(--glass);
+}
+
+/* Rest of your CSS remains the same */
+
+/* Info Panel */
+.info-panel {
+    flex: 1;
+    padding: 1.25rem;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* Strength Bar */
+.strength-section {
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.strength-bar {
+    height: 4px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.progress {
+    height: 100%;
+    width: 0;
+    transition: var(--transition);
+    box-shadow: 0 0 10px currentColor;
+}
+
+.meter-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Status Panels */
+.status-panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    flex: 1;
+    min-height: 0;
+}
+
+.panel {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: var(--transition);
+    overflow: auto;
+    border: 1px solid var(--border);
+}
+
+.panel.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Analysis Panel */
+.warning, .suggestion {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    background: var(--glass);
+    font-size: 0.9rem;
+}
+
+.warning {
+    color: var(--warning);
+    background: var(--warning-dim);
+}
+
+.suggestion {
+    color: var(--text-secondary);
+}
+
+.warning i, .suggestion i {
+    font-size: 1rem;
+}
+
+/* Breach Panel */
+.breach {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.breach i {
+    font-size: 1.5rem;
+}
+
+.breach.danger i {
+    color: var(--danger);
+    text-shadow: 0 0 8px var(--danger);
+}
+
+.breach.success i {
+    color: var(--success);
+    text-shadow: 0 0 8px var(--success);
+}
+
+.breach-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.breach-details strong {
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.breach-details span {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Footer */
+footer {
+    padding: 1rem;
+    border-top: 1px solid var(--border);
+    background: var(--glass);
+}
+
+.secure-note {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.secure-note i {
+    color: var(--primary-light);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .app-wrapper {
+        height: 95vh;
+    }
+
+    .status-panels {
+        grid-template-columns: 1fr;
+    }
+
+    header, .info-panel {
+        padding: 1rem;
+    }
+
+    .panel {
+        padding: 1rem;
+    }
+
+    .title-group i {
+        font-size: 1.5rem;
+    }
+
+    h1 {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-height: 600px) {
+    .app-wrapper {
+        height: 95vh;
+    }
+}
